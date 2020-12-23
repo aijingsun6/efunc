@@ -1,6 +1,6 @@
 -module(efunc_test).
 -author('alking').
-
+-include("efunc.hrl").
 -include_lib("eunit/include/eunit.hrl").
 
 simple_test() ->
@@ -10,6 +10,12 @@ curry_test() ->
   F = fun(X, Y) -> X + Y end,
   Add = efunc:curry(F, 1),
   ?assertEqual(3, Add([2])).
+
+curry_2_test() ->
+  F = fun(X, Y) -> X + Y end,
+  F1 = ?CURRY(F),
+  F2 = F1(1),
+  ?assertEqual(3, F2(2)).
 
 curry_3_test() ->
   F = fun(A1, A2, A3) -> A1 + A2 + A3 end,

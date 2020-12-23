@@ -1,9 +1,13 @@
 -module(efunc).
 %% API
 -export([
+  curry/1,
   curry/2,
   pipe/1
 ]).
+
+curry(F) ->
+  curry(F, []).
 
 curry(F, Args) when is_function(F), is_list(Args) ->
   {arity, Arity} = erlang:fun_info(F, arity),

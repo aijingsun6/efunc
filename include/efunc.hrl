@@ -1,3 +1,2 @@
--define(COMPOSE(F,G), fun(X)-> F(G(X)).
-
--define(CURRY(Func), ok).
+-define(CURRY(F), efunc:curry(F)).
+-define(CURRY(F, A), efunc:curry(F, A)).
