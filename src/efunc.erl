@@ -14,9 +14,12 @@ curry_n(N, _F, _Args) when N < 0 ->
 curry_n(N, F, Args) when N == 0 ->
   erlang:apply(F, Args);
 curry_n(N, F, Args) ->
-  fun(L) ->
+  fun(L) when is_list(L) ->
     N2 = N - erlang:length(L),
-    curry_n(N2, F, Args ++ L)
+    curry_n(N2, F, Args ++ L);
+    (E) ->
+      N2 = N - 1,
+      curry_n(N2, F, Args ++ [E])
   end.
 
 

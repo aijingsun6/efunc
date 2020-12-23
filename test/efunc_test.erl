@@ -15,7 +15,7 @@ curry_3_test() ->
   F = fun(A1, A2, A3) -> A1 + A2 + A3 end,
   F1 = efunc:curry(F, []),
   ?assertEqual(6, F1([1, 2, 3])),
-  F2 = F1([1]),
+  F2 = F1(1),
   ?assertEqual(6, F2([2, 3])),
-  F3 = F2([2]),
+  F3 = F2(2),
   ?assertEqual(6, F3([3])).
