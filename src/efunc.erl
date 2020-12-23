@@ -1,6 +1,9 @@
 -module(efunc).
 %% API
--export([curry/2]).
+-export([
+  curry/2,
+  pipe/1
+]).
 
 curry(F, Args) when is_function(F), is_list(Args) ->
   {arity, Arity} = erlang:fun_info(F, arity),
@@ -21,6 +24,18 @@ curry_n(N, F, Args) ->
       N2 = N - 1,
       curry_n(N2, F, Args ++ [E])
   end.
+
+pipe(F) when is_function(F, 1) ->
+  F;
+pipe(L) when is_list(L) ->
+  pipe(L, fun(X) -> X end).
+
+pipe([], Acc) ->
+  Acc;
+pipe([F | L], Acc) when is_function(F, 1) ->
+  Acc2 = fun(X) -> F(Acc(X)) end,
+  pipe(L, Acc2).
+
 
 
 

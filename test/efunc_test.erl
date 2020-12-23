@@ -19,3 +19,10 @@ curry_3_test() ->
   ?assertEqual(6, F2([2, 3])),
   F3 = F2(2),
   ?assertEqual(6, F3([3])).
+
+pipe_test() ->
+  X2 = fun(X) -> X * 2 end,
+  X3 = fun(X) -> X * 3 end,
+  F = efunc:pipe([X2, X3]),
+  {arity, 1} = erlang:fun_info(F, arity),
+  ?assertEqual(6, F(1)).
