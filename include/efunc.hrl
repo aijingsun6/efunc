@@ -1,2 +1,6 @@
 -define(CURRY(F), efunc:curry(F)).
 -define(CURRY(F, A), efunc:curry(F, A)).
+-define(PIPE(L), efunc:pipe(L)).
+-define(PROP(K), efunc:prop(K)).
+-define(PROP_EQ(K, V), efunc:prop_eq(K, V)).
+-define(ALL(F),efunc:all(F)).

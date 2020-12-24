@@ -32,3 +32,20 @@ pipe_test() ->
   F = efunc:pipe([X2, X3]),
   {arity, 1} = erlang:fun_info(F, arity),
   ?assertEqual(6, F(1)).
+
+prop_test() ->
+  F = efunc:prop(foo),
+  {arity, 1} = erlang:fun_info(F, arity),
+  ?assertEqual(bar, F(#{foo => bar})).
+
+prop_eq_test() ->
+  F = efunc:prop_eq(foo, bar),
+  {arity, 1} = erlang:fun_info(F, arity),
+  ?assertEqual(true, F(#{foo => bar})).
+
+all_test() ->
+  F = efunc:all(fun(X) -> X == 1 end),
+  ?assert(F([1,1,1])),
+  ?assert(not F([1,2,1])).
+
+
