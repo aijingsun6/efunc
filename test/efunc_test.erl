@@ -71,14 +71,46 @@ thunkify_test() ->
   {arity, 0} = erlang:fun_info(F3, arity),
   3 = F3().
 
-cond_test()->
+cond_test() ->
   L = [
-    {fun(X)-> X < 1 end, fun(_)-> 0 end},
-    {fun(X)-> X >= 1 orelse X =< 10 end, fun(X)-> X * X * X end},
-    {fun(X)-> X > 10 end, fun(X)-> X * X end}
+    {fun(X) -> X < 1 end, fun(_) -> 0 end},
+    {fun(X) -> X >= 1 orelse X =< 10 end, fun(X) -> X * X * X end},
+    {fun(X) -> X > 10 end, fun(X) -> X * X end}
   ],
   F = efunc:condition(L),
   0 = F(-1).
 
+group_by_test() ->
+  F = fun(S) when S >= 90 -> <<"A">>;
+    (S) when S >= 80 -> <<"B">>;
+    (S) when S >= 70 -> <<"C">>;
+    (S) when S >= 60 -> <<"D">>;
+    (_) -> <<"E">> end,
 
+  F2 = efunc:group_by(F),
+
+  M = F2(lists:seq(50, 100)),
+  #{<<"E">> := E, <<"D">> := D, <<"C">> := C, <<"B">> := B, <<"A">> := A} = M,
+  E = lists:seq(50, 59),
+  D = lists:seq(60, 69),
+  C = lists:seq(70, 79),
+  B = lists:seq(80, 89),
+  A = lists:seq(90, 100).
+
+group_with_test() ->
+  SF = fun(S) when S >= 90 -> <<"A">>;
+    (S) when S >= 80 -> <<"B">>;
+    (S) when S >= 70 -> <<"C">>;
+    (S) when S >= 60 -> <<"D">>;
+    (_) -> <<"E">> end,
+  F = efunc:group_with(
+    fun(X, Y) -> SF(X) =:= SF(Y) end
+  ),
+  L = F(lists:seq(50, 100)),
+  [E, D, C, B, A] = L,
+  E = lists:seq(50, 59),
+  D = lists:seq(60, 69),
+  C = lists:seq(70, 79),
+  B = lists:seq(80, 89),
+  A = lists:seq(90, 100).
 

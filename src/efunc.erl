@@ -40,7 +40,9 @@
   tap/1,
   thunkify/1,
   condition/1,
-  equals/1
+  equals/1,
+  group_by/1,
+  group_with/1
 ]).
 
 -define(LAZY(S, Lazy), case Lazy of true -> fun() -> S end;false -> S end).
@@ -212,3 +214,27 @@ condition([{Pre, F} | L], X) ->
 
 equals(F) ->
   fun(X) -> F(X) end.
+
+group_by(F) ->
+  fun(L) ->
+    Fun = fun(E, Acc) ->
+      Tag = F(E),
+      LS = maps:get(Tag, Acc, []),
+      maps:put(Tag, LS ++ [E], Acc) end,
+    lists:foldl(Fun, #{}, L)
+  end.
+
+group_with(F) ->
+  fun(L) ->
+    Fun = fun(E, Acc) -> group_with_i(Acc, E, F, []) end,
+    lists:foldl(Fun, [], L) end.
+
+group_with_i([], E, _F, Acc) ->
+  lists:reverse([[E] | Acc]);
+group_with_i([[H0 | _] = H | L], E, F, Acc) ->
+  case F(H0, E) of
+    true -> lists:reverse(Acc) ++ [H++[E]] ++ L;
+    false -> group_with_i(L, E, F, [H | Acc])
+  end.
+
+
