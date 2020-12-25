@@ -45,7 +45,40 @@ prop_eq_test() ->
 
 all_test() ->
   F = efunc:all(fun(X) -> X == 1 end),
-  ?assert(F([1,1,1])),
-  ?assert(not F([1,2,1])).
+  ?assert(F([1, 1, 1])),
+  ?assert(not F([1, 2, 1])).
+
+count_by_test() ->
+  F = efunc:count_by(fun(X) -> X > 5 end),
+  L = lists:seq(1, 10),
+  C = F(L),
+  ?assertEqual(5, C).
+
+sort_test() ->
+  F = efunc:sort(efunc:descend()),
+  L2 = F(lists:seq(1, 5)),
+  ?assertEqual([5, 4, 3, 2, 1], L2).
+
+flip_test() ->
+  F = efunc:flip(),
+  [2, 1, 3] = F([1, 2, 3]).
+
+thunkify_test() ->
+  F = fun(X, Y) -> X + Y end,
+  F2 = efunc:thunkify(F),
+  {arity, 2} = erlang:fun_info(F2, arity),
+  F3 = F2(1, 2),
+  {arity, 0} = erlang:fun_info(F3, arity),
+  3 = F3().
+
+cond_test()->
+  L = [
+    {fun(X)-> X < 1 end, fun(_)-> 0 end},
+    {fun(X)-> X >= 1 orelse X =< 10 end, fun(X)-> X * X * X end},
+    {fun(X)-> X > 10 end, fun(X)-> X * X end}
+  ],
+  F = efunc:condition(L),
+  0 = F(-1).
+
 
 
